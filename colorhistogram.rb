@@ -64,8 +64,6 @@ class ColorHistogram < Sinatra::Base
 			return h
 		rescue
 			raise 
-		ensure
-			image.destroy!
 		end
 	end
 
