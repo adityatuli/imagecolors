@@ -55,9 +55,10 @@ class ColorHistogram < Sinatra::Base
 			uri = URI.parse(url)
 			uri.open { |f|
 				image.from_blob(f.read)
+				total_pixels = image.columns * image.rows
 				hist = image.quantize(max_colors, Magick::RGBColorspace).color_histogram
 				pixels = hist.each {|pixel, value|
-					h[pixel.to_color(Magick::AllCompliance, false, 8, true)] = value
+					h[pixel.to_color(Magick::AllCompliance, false, 8, true)] = (value/total_pixels.to_f * 100).round(2)
 				}
 			}		
 			return h
