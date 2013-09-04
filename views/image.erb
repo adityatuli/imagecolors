@@ -1,0 +1,12 @@
+<html>
+	<head><title>Image Color Analysis - Top <%= settings.max_colors %> colors</title></head>
+	<body>
+		<h2>Color Analysis Result</h2>
+		<p></p>
+		<% if !@h.nil?
+			@h.each { |key, value| %> 
+		<div <%= "style='float: left; width: 55; height: 55; background-color: #{key.to_s}; border-width:1px;	border-style:solid; margin-right: 10px; font-size: 12px'" %>><%= key.to_s %></div>
+			<% } %>
+		<% end %>
+	</body>
+</html>
