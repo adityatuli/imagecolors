@@ -2,7 +2,7 @@
 # encoding: UTF-8
 require 'rubygems' if RUBY_VERSION < '1.9'
 require 'sinatra/base'
-require 'rmagick'
+require 'RMagick'
 require 'open-uri'
 require 'json'
 require 'thin'
