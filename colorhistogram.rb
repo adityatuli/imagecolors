@@ -1,8 +1,11 @@
 # colorhistogram.rb
+# encoding: UTF-8
+require 'rubygems' if RUBY_VERSION < '1.9'
 require 'sinatra/base'
 require 'rmagick'
 require 'open-uri'
 require 'json'
+require 'thin'
 
 class ColorHistogram < Sinatra::Base
 	include Magick
@@ -10,6 +13,7 @@ class ColorHistogram < Sinatra::Base
 	configure do
 		# maximum number of colors to fetch
 		set :max_colors, 5
+		set :protection, :except => :path_traversal
 	end
 
 	# 404 handler
@@ -18,13 +22,13 @@ class ColorHistogram < Sinatra::Base
   end
 
 	# default handler
-	get '/image' do
+	get '/image/*' do
 		@h = {}
 		@message = ""
 
-		url = params[:url]
-		if !url.nil? 
-			@h = get_histogram(url)
+		@url = params[:splat].first
+		if !@url.nil? 
+			@h = get_histogram(@url)
 		else
 			@message = "Please provide an image url to fetch!"
 		end	
@@ -32,10 +36,11 @@ class ColorHistogram < Sinatra::Base
 	end
 
 	# json handler
-	get '/image.json' do
+	get '/image.json/*' do
 		content_type :json
 
-		url = params[:url]
+		url = params[:splat].first
+
 		if !url.nil?
 			h = get_histogram(url)
 			h.to_json
@@ -53,6 +58,7 @@ class ColorHistogram < Sinatra::Base
 			h = {}
 
 			uri = URI.parse(url)
+
 			uri.open { |f|
 				image.from_blob(f.read)
 				total_pixels = image.columns * image.rows
